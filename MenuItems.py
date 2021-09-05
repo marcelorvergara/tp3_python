@@ -13,5 +13,6 @@ class MenuItems(threading.Thread):
         print("6 - Eu?")
         print("7 - Programa de Manipulação de Listas")
         print("8 - Vc tem dado em casa?")
+        print("9 - Desafio\n")
         print("0 - Digite 0 (Zero) para sair\n")
 

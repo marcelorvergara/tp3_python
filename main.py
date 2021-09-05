@@ -1,5 +1,6 @@
 from threading import Thread
 
+
 import MenuItems
 from Questao1 import Questao1
 from Questao2 import Questao2
@@ -36,6 +37,9 @@ def switch_menu(arg):
     elif arg == 8:
         qst = Questao8()
         qst.start()
+    elif arg == 9:
+        # será implementado
+        print("\n\nEstá no arquivo Desafio.py")
     else:
         print("\n--------\nQuestão inexistente ou opção inválida!\n--------\n")
 

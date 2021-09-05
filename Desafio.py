@@ -12,6 +12,8 @@ pri_tentativa = 0
 matriz = []
 viradas = []
 matriz_viradas = []
+mins = StringVar()
+sec = StringVar()
 
 
 def on_click(event):
@@ -32,6 +34,13 @@ def on_click(event):
     # primeira tentativa
     else:
         pri_tentativa = num_int
+    if len(viradas) == 12:
+        print('Ganhou', 60 - int(sec.get()))
+        tempo = 60 - int(sec.get())
+        res_window = Toplevel(root)
+        res_window.title('Resultado Vencedor!')
+        res_window.geometry('750x300')
+        Label(res_window, text='Você ganhou com o tempo de: '+ str(tempo) + " segundos").place(x=167, y=100)
 
 
 def img_default(virada):
@@ -63,7 +72,6 @@ def img_default(virada):
 
 
 def inicia():
-    logos = []
     logos_files = os.listdir("logos")
     random_files = random.sample(logos_files, 6)
     random_files_2 = random_files
@@ -83,8 +91,6 @@ def inicia():
         l += 1
 
     # colocando as imagens da tabela no tela
-    i = 0
-    j = 0
     tot = 0
     gabarito_l = {}
     for i in range(3):
@@ -98,8 +104,6 @@ def inicia():
             b.grid(row=i, column=j)
             tot += 1
 
-    mins = StringVar()
-    sec = StringVar()
     mins.set('00')
     sec.set('05')
     lbl_mins = Entry(root, textvariable=mins, width=2)
@@ -110,9 +114,7 @@ def inicia():
     # contador de tempo para memorização
     times = int(mins.get()) * 60 + int(sec.get())
     while times > -1:
-        print(times)
         minute, second = (times // 60, times % 60)
-        hour = 0
         if minute > 60:
             hour, minute = (minute // 60, minute % 60)
         sec.set(second)
@@ -126,12 +128,10 @@ def inicia():
         times -= 1
     mins.set('01')
     sec.set('00')
-    #contador de tempo
+    # contador de tempo
     times = int(mins.get()) * 60 + int(sec.get())
     while times > -1:
-        print(times)
         minute, second = (times // 60, times % 60)
-        hour = 0
         if minute > 60:
             hour, minute = (minute // 60, minute % 60)
         sec.set(second)
@@ -143,6 +143,7 @@ def inicia():
             sec.set('00')
             mins.set('00')
         times -= 1
+
 
 
 Button(root, text='Começar', bd='2', bg='IndianRed1', font=('Helveticabold', 10), command=inicia).place(x=60, y=60)
