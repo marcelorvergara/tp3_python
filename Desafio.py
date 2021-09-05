@@ -39,8 +39,8 @@ def on_click(event):
         tempo = 60 - int(sec.get())
         res_window = Toplevel(root)
         res_window.title('Resultado Vencedor!')
-        res_window.geometry('750x300')
-        Label(res_window, text='Você ganhou com o tempo de: '+ str(tempo) + " segundos").place(x=167, y=100)
+        res_window.geometry('750x240')
+        Label(res_window, text='Você ganhou com o tempo de: ' + str(tempo) + " segundos").place(x=167, y=80)
 
 
 def img_default(virada):
@@ -143,7 +143,6 @@ def inicia():
             sec.set('00')
             mins.set('00')
         times -= 1
-
 
 
 Button(root, text='Começar', bd='2', bg='IndianRed1', font=('Helveticabold', 10), command=inicia).place(x=60, y=60)
