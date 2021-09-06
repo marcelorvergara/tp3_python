@@ -10,6 +10,7 @@ from Questao5 import Questao5
 from Questao6 import Questao6
 from Questao7 import Questao7
 from Questao8 import Questao8
+from Questao9Desafio import Questao9Desafio
 
 
 def switch_menu(arg):
@@ -38,8 +39,8 @@ def switch_menu(arg):
         qst = Questao8()
         qst.start()
     elif arg == 9:
-        # será implementado
-        print("\n\nEstá no arquivo Desafio.py")
+        qst = Questao9Desafio()
+        qst.start()
     else:
         print("\n--------\nQuestão inexistente ou opção inválida!\n--------\n")
 

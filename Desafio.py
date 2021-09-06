@@ -1,6 +1,7 @@
-import os, time
+import os
 import random
 import secrets
+import time
 from tkinter import *
 
 root = Tk()
