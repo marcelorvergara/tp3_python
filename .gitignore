@@ -3,5 +3,6 @@
 bin
 lib
 __pycache__
-__pycache__/
+exportToHTML
+
 

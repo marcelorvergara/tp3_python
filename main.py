@@ -41,6 +41,8 @@ def switch_menu(arg):
     elif arg == 9:
         qst = Questao9Desafio()
         qst.start()
+    elif arg == 0:
+        print("")
     else:
         print("\n--------\nQuestão inexistente ou opção inválida!\n--------\n")
 

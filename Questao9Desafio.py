@@ -32,18 +32,24 @@ class Questao9Desafio(threading.Thread):
         num_int = int(num)
         # não é primeira tentativa
         if pri_tentativa != 0:
-            # testar
+            # testar se acertou
             tentativa_2 = self.gabarito[num_int]
             tentativa_1 = self.gabarito[pri_tentativa]
             if tentativa_1 == tentativa_2:
                 print('acertou')
                 # acertou
-                self.img_default(tentativa_1)
+                self.img_default(tentativa_1, '', '')
+            else:
+                # virar de volta a primeira tentativa
+                self.img_default( '', '', '')
             # zerar as tentativas
             pri_tentativa = 0
         # primeira tentativa
         else:
+            # virar a carta da primeira tentativa para verificar se acertou
+            self.img_default('',event.widget.cget('image'),self.gabarito[num_int])
             pri_tentativa = num_int
+        # verifica se ganhou
         if len(self.viradas) == 12:
             print('Ganhou', 60 - int(self.sec.get()))
             tempo = 60 - int(self.sec.get())
@@ -52,31 +58,48 @@ class Questao9Desafio(threading.Thread):
             res_window.geometry('750x240')
             Label(res_window, text="Você ganhou com o tempo de: " + str(tempo) + " segundos").place(x=167, y=80)
 
-    def img_default(self, virada):
+    def img_default(self, virada, pri_clique, nome_pri_clique):
+        print(virada, pri_clique, nome_pri_clique)
+        # virada -> nome da dupla de cartas que user acertou (ex: python.png)
+        # pri_clique -> primeiro clique (ex: pyimage9)
         idx = 1
         for ii in range(3):
             for jj in range(4):
+                # acertou mizerávi
                 if virada == self.matriz[ii][jj]:
+                    # grava o endereço da segunda da dupla que acertou
                     self.matriz_viradas.append([ii, jj])
+                    # grava o nome da dupla que acertou
                     self.viradas.append(self.matriz[ii][jj])
                     label_ok = Label(root, image='')
                     pricture_ok = PhotoImage(file='logos/' + virada)
                     label_ok.img = pricture_ok
                     label_ok.config(image=label_ok.img)
                     label_ok.grid(row=ii, column=jj)
+                # virar a primeira da dupla que acertou. A segunda foi virada no primeiro if acima
                 elif self.matriz[ii][jj] in self.viradas and [ii, jj] not in self.matriz_viradas:
                     label_ok = Label(root, image='')
                     pricture_ok = PhotoImage(file='logos/' + virada)
                     label_ok.img = pricture_ok
                     label_ok.config(image=label_ok.img)
                     label_ok.grid(row=ii, column=jj)
+                # cria o botão sem imagem para clicar
                 elif self.matriz[ii][jj] not in self.viradas:
                     b = Button(root, image='')
-                    picture_d = PhotoImage(file='img_virada.png', name='pyimage' + str(idx))
-                    b.img = picture_d
-                    b.config(image=b.img)
-                    b.grid(row=ii, column=jj)
-                    b.bind('<Button-1>', self.on_click)
+                    nome_carta = 'pyimage' + str(idx)
+                    if nome_carta == pri_clique:
+                        # primeiro clique, manter virada
+                        label_pri = Label(root, image='')
+                        pricture_pri = PhotoImage(file='logos/' + nome_pri_clique)
+                        label_pri.img = pricture_pri
+                        label_pri.config(image=label_pri.img)
+                        label_pri.grid(row=ii, column=jj)
+                    else:
+                        picture_d = PhotoImage(file='img_virada.png', name=nome_carta)
+                        b.img = picture_d
+                        b.config(image=b.img)
+                        b.grid(row=ii, column=jj)
+                        b.bind('<Button-1>', self.on_click)
                 idx += 1
 
     def inicia(self):
@@ -111,7 +134,8 @@ class Questao9Desafio(threading.Thread):
         lbl_mins.grid(row=3, column=1)
         lbl_sec = Entry(root, textvariable=self.sec, width=2)
         lbl_sec.grid(row=3, column=2)
-        root.after(5000, self.img_default, '')
+        # 5 segundos para memorizar
+        root.after(5000, self.img_default, '', '', '')
         # contador de tempo para memorização
         self.mins.set('00')
         self.sec.set('05')
