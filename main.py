@@ -1,8 +1,4 @@
-from threading import Thread
-
-
 import MenuItems
-import Questao9Desafio
 from Questao1 import Questao1
 from Questao2 import Questao2
 from Questao3 import Questao3

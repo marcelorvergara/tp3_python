@@ -1,14 +1,14 @@
 import os
 import random
 import secrets
-import threading
 import time
 from tkinter import *
 
 pri_tentativa = 0
+times = 0
 
 
-class Questao9Desafio():
+class Questao9Desafio:
 
     def __init__(self, master):
         self.master = master
@@ -23,7 +23,7 @@ class Questao9Desafio():
                command=lambda: self.inicia()).place(x=60, y=60)
 
     def on_click(self, event):
-        global pri_tentativa
+        global pri_tentativa, times
         num = event.widget.cget('image').split('pyimage')[1]
         num_int = int(num)
         # não é primeira tentativa
@@ -47,6 +47,7 @@ class Questao9Desafio():
             pri_tentativa = num_int
         # verifica se ganhou
         if len(self.viradas) == 12:
+            times = -1
             print('Ganhou', 60 - int(self.sec.get()))
             tempo = 60 - int(self.sec.get())
             msg = text = "Você ganhou com o tempo de: " + str(tempo) + " segundos"
@@ -97,6 +98,7 @@ class Questao9Desafio():
                 idx += 1
 
     def inicia(self):
+        global times
         self.num_tentativas = 0
         self.gabarito = {}
         self.matriz = []
@@ -171,6 +173,7 @@ class Questao9Desafio():
                 self.mins.set('00')
             times -= 1
         if len(self.viradas) < 12:
+            times = -1
             res_window = Toplevel(self.master)
             app = Resultado(res_window, 'Você não ganhou :-(')
 
@@ -179,11 +182,11 @@ class Resultado:
     def __init__(self, master, msg):
         self.master = master
         self.frame = Frame(self.master)
-        self.msg = Label(self.frame, text=msg).grid(row=0, column=1)
+        self.msg = Label(self.frame, text=msg, font=('Helveticabold', 14)).grid(sticky=W, row=1, column=1, padx=15, pady=12)
         self.close = Button(self.frame, text='Fechar o Jogo', bd='2', bg='IndianRed1', font=('Helveticabold', 10),
-                            command=self.fecha_janela).grid(row=1, column=1)
+                            command=self.fecha_janela).grid(sticky=E, row=5, column=1, padx=5, pady=2)
         self.novo = Button(self.frame, text='Tentar Novamente', bd='2', bg='IndianRed1', font=('Helveticabold', 10),
-                           command=self.tenta_novamente).grid(row=2, column=1)
+                           command=self.tenta_novamente).grid(sticky=E, row=6, column=1, padx=5, pady=2)
         self.frame.grid()
 
     def fecha_janela(self):
@@ -192,10 +195,12 @@ class Resultado:
         root.destroy()
 
     def tenta_novamente(self):
+        for child in root.winfo_children():
+            child.destroy()
         q = Questao9Desafio(root)
         root.update()
         self.master.destroy()
-        q.inicia()
+        root.after(100, q.inicia())
 
 
 def saindo():
