@@ -2,6 +2,7 @@ from threading import Thread
 
 
 import MenuItems
+import Questao9Desafio
 from Questao1 import Questao1
 from Questao2 import Questao2
 from Questao3 import Questao3
@@ -10,7 +11,7 @@ from Questao5 import Questao5
 from Questao6 import Questao6
 from Questao7 import Questao7
 from Questao8 import Questao8
-from Questao9Desafio import Questao9Desafio
+from Questao9Desafio import main
 
 
 def switch_menu(arg):
@@ -39,8 +40,8 @@ def switch_menu(arg):
         qst = Questao8()
         qst.start()
     elif arg == 9:
-        qst = Questao9Desafio()
-        qst.start()
+        main()
+
     elif arg == 0:
         print("")
     else:

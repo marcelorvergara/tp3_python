@@ -5,26 +5,22 @@ import threading
 import time
 from tkinter import *
 
-root = Tk()
-root.title("Teste de Memória")
-
 pri_tentativa = 0
 
 
-class Questao9Desafio(threading.Thread):
-    num_tentativas = 0
-    gabarito = {}
-    matriz = []
-    viradas = []
-    matriz_viradas = []
-    mins = StringVar()
-    sec = StringVar()
+class Questao9Desafio():
 
-    def __init__(self):
-        super().__init__()
-        Button(root, text='Começar', bd='2', bg='IndianRed1', font=('Helveticabold', 10),
+    def __init__(self, master):
+        self.master = master
+        self.num_tentativas = 0
+        self.gabarito = {}
+        self.matriz = []
+        self.viradas = []
+        self.matriz_viradas = []
+        self.mins = StringVar()
+        self.sec = StringVar()
+        Button(self.master, text='Começar', bd='2', bg='IndianRed1', font=('Helveticabold', 10),
                command=lambda: self.inicia()).place(x=60, y=60)
-        root.mainloop()
 
     def on_click(self, event):
         global pri_tentativa
@@ -36,30 +32,28 @@ class Questao9Desafio(threading.Thread):
             tentativa_2 = self.gabarito[num_int]
             tentativa_1 = self.gabarito[pri_tentativa]
             if tentativa_1 == tentativa_2:
-                print('acertou')
+                print('acertou mezerávi')
                 # acertou
                 self.img_default(tentativa_1, '', '')
             else:
                 # virar de volta a primeira tentativa
-                self.img_default( '', '', '')
+                self.img_default('', '', '')
             # zerar as tentativas
             pri_tentativa = 0
         # primeira tentativa
         else:
             # virar a carta da primeira tentativa para verificar se acertou
-            self.img_default('',event.widget.cget('image'),self.gabarito[num_int])
+            self.img_default('', event.widget.cget('image'), self.gabarito[num_int])
             pri_tentativa = num_int
         # verifica se ganhou
         if len(self.viradas) == 12:
             print('Ganhou', 60 - int(self.sec.get()))
             tempo = 60 - int(self.sec.get())
-            res_window = Toplevel(root)
-            res_window.title('Resultado Vencedor!')
-            res_window.geometry('750x240')
-            Label(res_window, text="Você ganhou com o tempo de: " + str(tempo) + " segundos").place(x=167, y=80)
+            msg = text = "Você ganhou com o tempo de: " + str(tempo) + " segundos"
+            res_window = Toplevel(self.master)
+            app = Resultado(res_window, msg)
 
     def img_default(self, virada, pri_clique, nome_pri_clique):
-        print(virada, pri_clique, nome_pri_clique)
         # virada -> nome da dupla de cartas que user acertou (ex: python.png)
         # pri_clique -> primeiro clique (ex: pyimage9)
         idx = 1
@@ -71,26 +65,26 @@ class Questao9Desafio(threading.Thread):
                     self.matriz_viradas.append([ii, jj])
                     # grava o nome da dupla que acertou
                     self.viradas.append(self.matriz[ii][jj])
-                    label_ok = Label(root, image='')
-                    pricture_ok = PhotoImage(file='logos/' + virada)
+                    label_ok = Label(self.master, image='')
+                    pricture_ok = PhotoImage(file=os.path.join('logos', virada))
                     label_ok.img = pricture_ok
                     label_ok.config(image=label_ok.img)
                     label_ok.grid(row=ii, column=jj)
                 # virar a primeira da dupla que acertou. A segunda foi virada no primeiro if acima
                 elif self.matriz[ii][jj] in self.viradas and [ii, jj] not in self.matriz_viradas:
-                    label_ok = Label(root, image='')
-                    pricture_ok = PhotoImage(file='logos/' + virada)
+                    label_ok = Label(self.master, image='')
+                    pricture_ok = PhotoImage(file=os.path.join('logos', virada))
                     label_ok.img = pricture_ok
                     label_ok.config(image=label_ok.img)
                     label_ok.grid(row=ii, column=jj)
                 # cria o botão sem imagem para clicar
                 elif self.matriz[ii][jj] not in self.viradas:
-                    b = Button(root, image='')
+                    b = Button(self.master, image='')
                     nome_carta = 'pyimage' + str(idx)
                     if nome_carta == pri_clique:
                         # primeiro clique, manter virada
-                        label_pri = Label(root, image='')
-                        pricture_pri = PhotoImage(file='logos/' + nome_pri_clique)
+                        label_pri = Label(self.master, image='')
+                        pricture_pri = PhotoImage(file=os.path.join('logos', nome_pri_clique))
                         label_pri.img = pricture_pri
                         label_pri.config(image=label_pri.img)
                         label_pri.grid(row=ii, column=jj)
@@ -103,6 +97,11 @@ class Questao9Desafio(threading.Thread):
                 idx += 1
 
     def inicia(self):
+        self.num_tentativas = 0
+        self.gabarito = {}
+        self.matriz = []
+        self.viradas = []
+        self.matriz_viradas = []
         logos_files = os.listdir("logos")
         random_files = random.sample(logos_files, 6)
         random_files_2 = random_files
@@ -122,20 +121,21 @@ class Questao9Desafio(threading.Thread):
         gabarito_l = {}
         for i in range(3):
             for j in range(4):
-                b = Label(root, image='')
-                picture = PhotoImage(file='logos/' + self.matriz[i][j])
+                b = Label(self.master, image='')
+                picture = PhotoImage(file=os.path.join('logos', self.matriz[i][j]))
                 gabarito_l[tot + 1] = self.matriz[i][j]
                 self.gabarito.update(gabarito_l)
                 b.img = picture
                 b.config(image=b.img)
                 b.grid(row=i, column=j)
                 tot += 1
-        lbl_mins = Entry(root, textvariable=self.mins, width=2)
+        # minutos e segundos no cando inferior
+        lbl_mins = Entry(self.master, textvariable=self.mins, width=2)
         lbl_mins.grid(row=3, column=1)
-        lbl_sec = Entry(root, textvariable=self.sec, width=2)
+        lbl_sec = Entry(self.master, textvariable=self.sec, width=2)
         lbl_sec.grid(row=3, column=2)
         # 5 segundos para memorizar
-        root.after(5000, self.img_default, '', '', '')
+        self.master.after(5000, self.img_default, '', '', '')
         # contador de tempo para memorização
         self.mins.set('00')
         self.sec.set('05')
@@ -147,7 +147,7 @@ class Questao9Desafio(threading.Thread):
             self.sec.set(second)
             self.mins.set(minute)
             # Update tempo
-            root.update()
+            self.master.update()
             time.sleep(1)
             if times == 0:
                 self.sec.set('00')
@@ -164,21 +164,52 @@ class Questao9Desafio(threading.Thread):
             self.sec.set(second)
             self.mins.set(minute)
             # Update tempo
-            root.update()
+            self.master.update()
             time.sleep(1)
             if times == 0:
                 self.sec.set('00')
                 self.mins.set('00')
             times -= 1
         if len(self.viradas) < 12:
-            res_window = Toplevel(root)
-            res_window.title('O Tempo acabou!')
-            res_window.geometry('750x240')
-            Label(res_window, text='Você não ganhou').place(x=10, y=10)
-            Button(res_window, text='Tentar Novamente', bd='2', bg='IndianRed1', font=('Helveticabold', 10),
-                   command=lambda: self.inicia()).place(x=60, y=60)
+            res_window = Toplevel(self.master)
+            app = Resultado(res_window, 'Você não ganhou :-(')
+
+
+class Resultado:
+    def __init__(self, master, msg):
+        self.master = master
+        self.frame = Frame(self.master)
+        self.msg = Label(self.frame, text=msg).grid(row=0, column=1)
+        self.close = Button(self.frame, text='Fechar o Jogo', bd='2', bg='IndianRed1', font=('Helveticabold', 10),
+                            command=self.fecha_janela).grid(row=1, column=1)
+        self.novo = Button(self.frame, text='Tentar Novamente', bd='2', bg='IndianRed1', font=('Helveticabold', 10),
+                           command=self.tenta_novamente).grid(row=2, column=1)
+        self.frame.grid()
+
+    def fecha_janela(self):
+        self.master.destroy()
+        root.update()
+        root.destroy()
+
+    def tenta_novamente(self):
+        q = Questao9Desafio(root)
+        root.update()
+        self.master.destroy()
+        q.inicia()
+
+
+def saindo():
+    root.destroy()
+
+
+def main():
+    global root
+    root = Tk()
+    root.protocol('WM_DELETE_WINDOW', saindo)
+    root.title("Teste de Memória")
+    q9 = Questao9Desafio(root)
+    root.mainloop()
 
 
 if __name__ == "__main__":
-    Questao9Desafio = Questao9Desafio()
-    Questao9Desafio.mainloop()
+    main()
